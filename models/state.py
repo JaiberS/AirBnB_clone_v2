@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 """This is the state class"""
 from models.base_model import BaseModel
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String
+
+Base = declarative_base()
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """This is the class for State
     Attributes:
         name: input name
     """
-    name = ""
+    __tablename__ = "states"
+    name = Column(String(128), nullable=False)
