@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from shlex import split
+from pdb import set_trace
 
 
 class HBNBCommand(cmd.Cmd):
@@ -42,9 +43,20 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
+            if "all" in line:
+                raise NameError()
             obj = eval("{}()".format(my_list[0]))
             obj.save()
             print("{}".format(obj.id))
+            if len(my_list) > 1:
+                str1 = my_list[0] + ".update("
+                del my_list[0]
+                anotherlist = []
+                for i in my_list:
+                    anotherlist.append(tuple(i.split('=')))
+                str1 = str1 + obj.id + ", " + str(dict(anotherlist))
+                str1 = str1 + ")"
+                HBNBCommand().default(str1)
         except SyntaxError:
             print("** class name missing **")
         except NameError:
@@ -226,7 +238,10 @@ class HBNBCommand(cmd.Cmd):
         """retrieve all instances of a class and
         retrieve the number of instances
         """
-        my_list = line.split('.')
+        my_list0 = line.split('(')
+        my_list = my_list0[0].split('.')
+        if len(my_list) > 1:
+            my_list[1] = my_list[1] + '(' + my_list0[1]
         if len(my_list) >= 2:
             if my_list[1] == "all()":
                 self.do_all(my_list[0])
