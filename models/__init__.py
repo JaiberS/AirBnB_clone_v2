@@ -10,9 +10,10 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from os import environ
+from datetime import datetime
 
 
-if environ["HBNB_TYPE_STORAGE"] == "db":
+if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
     storage = DBStorage()
     storage.reload()
 else:

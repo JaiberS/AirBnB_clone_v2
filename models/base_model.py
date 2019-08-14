@@ -4,6 +4,8 @@ import models
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
+from os import environ
+import uuid
 
 Base = declarative_base()
 
@@ -12,18 +14,20 @@ class BaseModel:
     """This class will defines all common attributes/methods
     for other classes
     """
-    id = Column(String(60), unique=True, nullable=False, primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
+        id = Column(String(60), unique=True, nullable=False, primary_key=True)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
         """Instantiation of base model class
         Args:
-            args: it won't be used
-            kwargs: arguments for the constructor of the BaseModel
+        args: it won't be used
+        kwargs: arguments for the constructor of the BaseModel
         Attributes:
-            id: unique id generated
-            created_at: creation date
-            updated_at: updated date
+        id: unique id generated
+        created_at: creation date
+        updated_at: updated date
         """
         if kwargs:
             for key, value in kwargs.items():
@@ -31,6 +35,10 @@ class BaseModel:
                     value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if key != "__class__":
                     setattr(self, key, value)
+        elif "HBNB_TYPE_STORAGE" not in environ.keys() or environ["HBNB_TYPE_STORAGE"] != "db":
+            self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """returns a string
@@ -63,7 +71,9 @@ class BaseModel:
         my_dict["updated_at"] = self.updated_at.isoformat()
         if "_sa_instance_state" in my_dict.keys():
             del my_dict["_sa_instance_state"]
+            models.storage.save()
         return my_dict
 
     def delete(self):
         models.storage.delete(self)
+        models.storage.save()

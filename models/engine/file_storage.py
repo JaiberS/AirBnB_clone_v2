@@ -29,7 +29,7 @@ class FileStorage:
         if cls is None:
             return self.__objects
         for i in self.__objects:
-            if type(self.__objects[i]) is cls:
+            if type(self.__objects[i]) is type(cls):
                 a_dict.setdefault(i, self.__objects[i])
         return a_dict
 
