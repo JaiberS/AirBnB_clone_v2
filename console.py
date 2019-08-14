@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from shlex import split
+import os
 
 
 class HBNBCommand(cmd.Cmd):
@@ -43,39 +44,38 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            obj = eval("{}()".format(my_list[0]))
-            obj.save()
-            objects = storage.all()
-            v = type(__class__).__name__ + "." + obj.id
-            v = objects[key]
-            if len(my_list) > 1:
-                for x in range(1, len(my_list)):
-                    new = my_list[i].split("=")
-                    try:
-                        v.__dict__[my_list[0]] = eval(my_list[1])
-                    except Exception:
-                        v.__dict__[my_list[0]] = my_list[1]
-                    v.save()
-
-            print("{}".format(obj.id))
+            Storage = os.environ.get('HBNB_TYPE_STORAGE')
+            if Storage == "db":
+                if "all" in line:
+                    raise NameError()
+                i = 1
+                strj = ""
+                while i < len(my_list) - 1:
+                    strj = strj + my_list[i]
+                obj = eval("{}({})".format(my_list[0], strj))
+                obj.id = str(uuid.uuid4())
+                obj.created_at = obj.updated_at = datetime.now()
+                obj.save()
+                print("{}".format(obj.id))
+            else:
+                if "all" in line:
+                    raise NameError()
+                obj = eval("{}()".format(my_list[0]))
+                obj.save()
+                print("{}".format(obj.id))
+                if len(my_list) > 1:
+                    str1 = my_list[0] + ".update("
+                    del my_list[0]
+                    anotherlist = []
+                    for i in my_list:
+                        anotherlist.append(tuple(i.split('=')))
+                    str1 = str1 + obj.id + ", " + str(dict(anotherlist))
+                    str1 = str1 + ")"
+                    HBNBCommand().default(str1)
         except SyntaxError:
             print("** class name missing **")
         except NameError:
-            print("** class doesn't exist **")
-
-            """            if len(my_list) > 1:
-                str1 = my_list[0] + ".update("
-                del my_list[0]
-                anotherlist = []
-                for i in my_list:
-                    anotherlist.append(tuple(i.split('=')))
-                str1 = str1 + obj.id + ", " + str(dict(anotherlist))
-                str1 = str1 + ")"
-                HBNBCommand().default(str1)"""
-        except SyntaxError:
-            print("** class name missing **")
-        except NameError:
-            print("** class doesn't exist **")
+             print("** class doesn't exist **")
 
     def do_show(self, line):
         """Prints the string representation of an instance
