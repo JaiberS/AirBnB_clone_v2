@@ -13,7 +13,7 @@ from os import environ
 
 
 if environ["HBNB_TYPE_STORAGE"] == "db":
-    storage = DBStorage
+    storage = DBStorage()
     storage.reload()
 else:
     storage = FileStorage()

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """This is the console for AirBnB"""
+import uuid
 import cmd
 from models import storage
 from datetime import datetime
@@ -11,7 +12,6 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from shlex import split
-from pdb import set_trace
 
 
 class HBNBCommand(cmd.Cmd):
@@ -43,12 +43,27 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if "all" in line:
-                raise NameError()
             obj = eval("{}()".format(my_list[0]))
             obj.save()
-            print("{}".format(obj.id))
+            objects = storage.all()
+            v = type(__class__).__name__ + "." + obj.id
+            v = objects[key]
             if len(my_list) > 1:
+                for x in range(1, len(my_list)):
+                    new = my_list[i].split("=")
+                    try:
+                        v.__dict__[my_list[0]] = eval(my_list[1])
+                    except Exception:
+                        v.__dict__[my_list[0]] = my_list[1]
+                    v.save()
+
+            print("{}".format(obj.id))
+        except SyntaxError:
+            print("** class name missing **")
+        except NameError:
+            print("** class doesn't exist **")
+
+            """            if len(my_list) > 1:
                 str1 = my_list[0] + ".update("
                 del my_list[0]
                 anotherlist = []
@@ -56,7 +71,7 @@ class HBNBCommand(cmd.Cmd):
                     anotherlist.append(tuple(i.split('=')))
                 str1 = str1 + obj.id + ", " + str(dict(anotherlist))
                 str1 = str1 + ")"
-                HBNBCommand().default(str1)
+                HBNBCommand().default(str1)"""
         except SyntaxError:
             print("** class name missing **")
         except NameError:
@@ -130,8 +145,17 @@ class HBNBCommand(cmd.Cmd):
         Exceptions:
             NameError: when there is no object taht has the name
         """
-        objects = storage.all()
-        my_list = []
+        if len(line) > 0:
+            my_list = line.split(" ")
+            if "all" in line:
+                raise NameError()
+            obj = eval("{}(\"Something\")".format(my_list[0]))
+            objects = storage.all(obj)
+            print(objects)
+        else:
+            objects = storage.all(None)
+            print(objects)
+        """my_list = []
         if not line:
             for key in objects:
                 my_list.append(objects[key])
@@ -147,7 +171,7 @@ class HBNBCommand(cmd.Cmd):
                     my_list.append(objects[key])
             print(my_list)
         except NameError:
-            print("** class doesn't exist **")
+            print("** class doesn't exist **")"""
 
     def do_update(self, line):
         """Updates an instanceby adding or updating attribute

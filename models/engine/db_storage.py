@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This is the file storage class for AirBnB"""
 import json
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from models.user import User
 from models.state import State
 from models.city import City
@@ -9,8 +9,10 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from os import environ
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.exc import InvalidRequestError
+
 
 
 class DBStorage:
@@ -22,24 +24,34 @@ class DBStorage:
     """
     __engine = None
     __session = None
-    
+
     def __init__(self):
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(environ['HBNB_MYSQL_USER'], environ['HBNB_MYSQL_PWD'], environ['HBNB_MYSQL_HOST'], environ['HBNB_MYSQL_DB']), pool_pre_ping=True)
-        if environ['HBNB_ENV'] == "test":
-            MetaData().drop_all(self.__engine)
- 
+        if 'HBNB_ENV' in environ.keys() and environ['HBNB_ENV'] == "test":
+            Base.metadata.drop_all(self.__engine)
+
     def all(self, cls=None):
         """returns a dictionary
         Return:
             returns a dictionary of __object
         """
-        if cls is None:
-            result = self.__session.query(User, State, City, Amenity, Place, Review)
-        else:
-            result = self.__session.query(cls)
+        result = None
         a_dict = {}
-        for i in result:
-            a_dict.setdefault(i.name + "." + str(i.id), i)
+        if cls is None:
+            classes = [User, State, City, Amenity, Place, Review]
+            for j in classes:
+                try:
+                    result = self.__session.query(j).all()
+                    if result is not None:
+                        for i in result:
+                            a_dict.setdefault(i.name + "." + str(i.id), i)
+                except InvalidRequestError:
+                    pass
+        else:
+            result = self.__session.query(type(cls)).all()
+            if result is not None:
+                for i in result:
+                    a_dict.setdefault(i.name + "." + str(i.id), i)
         return a_dict
 
     def new(self, obj):
@@ -59,13 +71,13 @@ class DBStorage:
     def reload(self):
         """serialize the file path to JSON file path
         """
-        Base.metadata.create_all(engine)
+        Base.metadata.create_all(self.__engine)
         session_fact = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(session_fact)
 
     def delete(self, obj=None):
         """delete an object from __objects
         """
-        if obj is not None: 
+        if obj is not None:
             self.__session.delete(obj)
             self.__session.commit()
