@@ -25,7 +25,7 @@ else:
 
         @property
         def cities(self):
-            all_cities = models.storage.all()
+            all_cities = models.storage.all(City)
             lista = []
             keys = all_cities.items()
             for i, j in keys:

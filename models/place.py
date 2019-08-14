@@ -60,3 +60,12 @@ else:
             latitude = 0.0
             longitude = 0.0
             amenity_ids = []
+            @property
+            def reviews(self):
+                all_reviews = models.storage.all()
+                lista = []
+                keys = all_review.items()
+                for i, j in keys:
+                    if "Review" == i[0:4] and j.place_id == self.id:
+                        lista.append(j)
+                return(lista)
