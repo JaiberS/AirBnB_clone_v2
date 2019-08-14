@@ -62,7 +62,7 @@ else:
             amenity_ids = []
             @property
             def reviews(self):
-                all_reviews = models.storage.all()
+                all_reviews = models.storage.all(Review)
                 lista = []
                 keys = all_review.items()
                 for i, j in keys:
