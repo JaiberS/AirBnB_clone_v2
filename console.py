@@ -53,8 +53,8 @@ class HBNBCommand(cmd.Cmd):
                 while i < len(my_list) - 1:
                     strj = strj + my_list[i]
                 obj = eval("{}({})".format(my_list[0], strj))
-                obj.id = str(uuid.uuid4())
-                obj.created_at = obj.updated_at = datetime.now()
+                """                obj.id = str(uuid.uuid4())
+                obj.created_at = obj.updated_at = datetime.now()"""
                 obj.save()
                 print("{}".format(obj.id))
             else:
