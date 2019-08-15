@@ -9,19 +9,20 @@ import models
 from uuid import uuid4
 
 
-
-if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
+if "HBNB_TYPE_STORAGE" in environ.keys(
+) and environ["HBNB_TYPE_STORAGE"] == "db":
     class State(BaseModel, Base):
-       """
-       This is the state class
-       """
-       __tablename__ = 'states'
-       name = Column(String(128), nullable=False)
-       cities = relationship("City", backref="state")
-       def __init__(self, **kwargs):
-           setattr(self, "id", str(uuid4()))
-           for k, v in kwargs.items():
-               setattr(self, k, v)
+        """
+        This is the state class
+        """
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
+        cities = relationship("City", backref="state")
+
+        def __init__(self, **kwargs):
+            setattr(self, "id", str(uuid4()))
+            for k, v in kwargs.items():
+                setattr(self, k, v)
 else:
     class State(BaseModel):
         """

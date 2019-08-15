@@ -14,7 +14,6 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.exc import InvalidRequestError
 
 
-
 class DBStorage:
     """This class serializes instances to a JSON file and
     deserializes JSON file to instances
@@ -26,7 +25,13 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(environ['HBNB_MYSQL_USER'], environ['HBNB_MYSQL_PWD'], environ['HBNB_MYSQL_HOST'], environ['HBNB_MYSQL_DB']), pool_pre_ping=True)
+        self.__engine = create_engine(
+            'mysql+mysqldb://{}:{}@{}/{}'.format(
+                environ['HBNB_MYSQL_USER'],
+                environ['HBNB_MYSQL_PWD'],
+                environ['HBNB_MYSQL_HOST'],
+                environ['HBNB_MYSQL_DB']),
+            pool_pre_ping=True)
         if 'HBNB_ENV' in environ.keys() and environ['HBNB_ENV'] == "test":
             Base.metadata.drop_all(self.__engine)
 

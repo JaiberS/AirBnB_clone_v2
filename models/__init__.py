@@ -13,7 +13,8 @@ from os import environ
 from datetime import datetime
 
 
-if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
+if "HBNB_TYPE_STORAGE" in environ.keys(
+) and environ["HBNB_TYPE_STORAGE"] == "db":
     storage = DBStorage()
     storage.reload()
 else:
