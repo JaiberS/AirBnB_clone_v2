@@ -4,6 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from os import environ
+from uuid import uuid4
 
 
 if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
@@ -22,6 +23,11 @@ if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db
         last_name = Column(String(128), nullable=True)
         places = relationship("Place", backref="user")
         reviews = relationship("Review", backref="user")
+
+        def __init__(self, **kwargs):
+            setattr(self, "id", str(uuid4()))
+            for k, v in kwargs.items():
+                setattr(self, k, v)
 else:
     class User(BaseModel):
         """This is the class for user

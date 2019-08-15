@@ -44,17 +44,18 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            Storage = os.environ.get('HBNB_TYPE_STORAGE')
+            Storage = "Deja Vu"
+            if "HBNB_TYPE_STORAGE" in os.environ.keys():
+                Storage = os.environ["HBNB_TYPE_STORAGE"]
             if Storage == "db":
                 if "all" in line:
                     raise NameError()
                 i = 1
                 strj = ""
-                while i < len(my_list) - 1:
-                    strj = strj + my_list[i]
-                obj = eval("{}({})".format(my_list[0], strj))
-                """                obj.id = str(uuid.uuid4())
-                obj.created_at = obj.updated_at = datetime.now()"""
+                while i < len(my_list):
+                    strj = strj + my_list[i] + ", "
+                    i += 1
+                obj = eval("{}({})".format(my_list[0], strj[0:-2]))
                 obj.save()
                 print("{}".format(obj.id))
             else:
@@ -72,8 +73,6 @@ class HBNBCommand(cmd.Cmd):
                     str1 = str1 + obj.id + ", " + str(dict(anotherlist))
                     str1 = str1 + ")"
                     HBNBCommand().default(str1)
-        except SyntaxError:
-            print("** class name missing **")
         except NameError:
              print("** class doesn't exist **")
 
@@ -145,7 +144,9 @@ class HBNBCommand(cmd.Cmd):
         Exceptions:
             NameError: when there is no object taht has the name
         """
-        Storage = os.environ.get('HBNB_TYPE_STORAGE')
+        Storage = "Somethingx2"
+        if "HBNB_TYPE_STORAGE" in os.environ.keys():
+            Storage = os.environ["HBNB_TYPE_STORAGE"]
         if Storage == "db":
             if len(line) > 0:
                 try:

@@ -4,13 +4,13 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
 from os import environ
+from uuid import uuid4
 
+
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60), ForeignKey('places.id'), nullable=False),
+                      Column('amenity_id', String(60), ForeignKey('amenities.id'), nullable=False))
 if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
-
-    place_amenity = Table('place_amenity', Base.metadata,
-                              Column('place_id', String(60), ForeignKey('places.id'), nullable=False),
-                              Column('amenity_id', String(60), ForeignKey('amenities.id'), nullable=False))
-
     class Place(BaseModel, Base):
         """This is the class for Place
         Attributes:
@@ -40,6 +40,10 @@ if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db
         reviews = relationship("Review", backref="place")
         amenities = relationship("Amenity",
                                  secondary=place_amenity, viewonly=False)
+        def __init__(self, **kwargs):
+            setattr(self, "id", str(uuid4()))
+            for k, v in kwargs.items():
+                setattr(self, k, v)
 else:
         class Place(BaseModel):
             """This is the class for Place

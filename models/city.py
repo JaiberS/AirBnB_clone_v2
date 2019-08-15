@@ -4,6 +4,8 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 from os import environ
+from uuid import uuid4
+
 
 if "HBNB_TYPE_STORAGE" in environ.keys() and  environ["HBNB_TYPE_STORAGE"] == "db":
     class City(BaseModel, Base):
@@ -15,7 +17,7 @@ if "HBNB_TYPE_STORAGE" in environ.keys() and  environ["HBNB_TYPE_STORAGE"] == "d
         __tablename__ = "cities"
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)
-        places = relationship("Place", backref="cities")
+        places = relationship("Place", backref="cities", cascade="all,delete")
 else:
         class City(BaseModel):
             """This is the class for City
