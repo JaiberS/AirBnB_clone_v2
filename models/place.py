@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 """This is the place class"""
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey, Integer, Float
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
 from os import environ
 
 if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
+
+    place_amenity = Table('place_amenity', Base.metadata,
+                              Column('place_id', String(60), ForeignKey('places.id'), nullable=False),
+                              Column('amenity_id', String(60), ForeignKey('amenities.id'), nullable=False))
+
     class Place(BaseModel, Base):
         """This is the class for Place
         Attributes:
@@ -33,6 +38,8 @@ if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db
         latitude = Column(Float, nullable=False, default=0)
         longitude = Column(Float, nullable=False, default=0)
         reviews = relationship("Review", backref="place")
+        amenities = relationship("Amenity",
+                                 secondary=place_amenity, viewonly=False)
 else:
         class Place(BaseModel):
             """This is the class for Place

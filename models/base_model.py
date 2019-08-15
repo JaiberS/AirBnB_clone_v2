@@ -15,7 +15,7 @@ class BaseModel:
     for other classes
     """
     if "HBNB_TYPE_STORAGE" in environ.keys() and environ["HBNB_TYPE_STORAGE"] == "db":
-        id = Column(String(60), unique=True, nullable=False, primary_key=True)
+        id = Column(String(60), unique=True, nullable=False, primary_key=True, default=str(uuid.uuid4))
         created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
         updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
