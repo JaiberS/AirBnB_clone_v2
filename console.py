@@ -74,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                     str1 = str1 + ")"
                     HBNBCommand().default(str1)
         except NameError:
-             print("** class doesn't exist **")
+            print("** class doesn't exist **")
 
     def do_show(self, line):
         """Prints the string representation of an instance
@@ -153,9 +153,9 @@ class HBNBCommand(cmd.Cmd):
                     my_list = line.split(" ")
                     if "all" in line or my_list[0] not in self.all_classes:
                         raise NameError()
-                    obj = eval("{}(\"Something\")".format(my_list[0]))
+                    obj = eval("{}()".format(my_list[0]))
                     objects = storage.all(obj)
-                    print(objects  )
+                    print(objects)
                 except NameError:
                     print("** class doesn't exist **")
             else:
