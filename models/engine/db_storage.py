@@ -37,6 +37,7 @@ class DBStorage:
         """
         result = None
         a_dict = {}
+        new_list = []
         if cls is None:
             classes = [User, State, City, Amenity, Place, Review]
             for j in classes:
@@ -44,15 +45,15 @@ class DBStorage:
                     result = self.__session.query(j).all()
                     if result is not None:
                         for i in result:
-                            a_dict.setdefault(i.name + "." + str(i.id), i)
+                            new_list.append(i)
                 except InvalidRequestError:
                     pass
         else:
             result = self.__session.query(type(cls)).all()
             if result is not None:
                 for i in result:
-                    a_dict.setdefault(i.name + "." + str(i.id), i)
-        return a_dict
+                    new_list.append(i)
+        return new_list
 
     def new(self, obj):
         """sets __object to given obj
