@@ -18,6 +18,10 @@ if "HBNB_TYPE_STORAGE" in environ.keys() and  environ["HBNB_TYPE_STORAGE"] == "d
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)
         places = relationship("Place", backref="cities", cascade="all,delete")
+        def __init__(self, **kwargs):
+            setattr(self, "id", str(uuid4()))
+            for k, v in kwargs.items():
+                setattr(self, k, v)
 else:
         class City(BaseModel):
             """This is the class for City
