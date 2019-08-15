@@ -70,7 +70,8 @@ class HBNBCommand(cmd.Cmd):
                     anotherlist = []
                     for i in my_list:
                         anotherlist.append(tuple(i.split('=')))
-                    str1 = str1 + obj.id + ", " + str(dict(anotherlist))
+                    anotherlist = dict(anotherlist)
+                    str1 = str1 + obj.id + ", " + str(anotherlist)
                     str1 = str1 + ")"
                     HBNBCommand().default(str1)
         except NameError:
@@ -195,6 +196,8 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = split(line, " ")
+            if "_" in my_list[-1]:
+                my_list[-1] = my_list[-1].replace("_", " ")
             if my_list[0] not in self.all_classes:
                 raise NameError()
             if len(my_list) < 2:
