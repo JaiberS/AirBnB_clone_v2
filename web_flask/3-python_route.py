@@ -26,7 +26,7 @@ def hello_c(text):
 @app.route('/python/<text>', strict_slashes=False)
 def hello_python(text='is cool'):
     """ string to be returned """
-    return 'python {}'.format(text).replace('_', ' ')
+    return 'Python {}'.format(text).replace('_', ' ')
 
 
 if __name__ == '__main__':
