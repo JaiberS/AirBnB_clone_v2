@@ -54,7 +54,7 @@ class DBStorage:
                 except InvalidRequestError:
                     pass
         else:
-            result = self.__session.query(type(eval(cls))).all()
+            result = self.__session.query(eval(cls)).all()
             if result is not None:
                 for i in result:
                     new_list.append(i)

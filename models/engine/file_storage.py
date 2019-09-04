@@ -29,7 +29,7 @@ class FileStorage:
         if cls is None:
             return self.__objects
         for i in self.__objects:
-            if isinstance(self.__objects[i], type(cls)):
+            if eval(i.split('.')[0]) is cls:
                 a_dict.setdefault(i, self.__objects[i])
         return a_dict
 
