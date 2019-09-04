@@ -71,3 +71,8 @@ class FileStorage:
                     llave = keys
                     break
             del self.__objects[llave]
+
+    def close(self):
+        """ call reload method
+        """
+        self.reload()

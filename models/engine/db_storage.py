@@ -54,7 +54,7 @@ class DBStorage:
                 except InvalidRequestError:
                     pass
         else:
-            result = self.__session.query(type(cls)).all()
+            result = self.__session.query(type(eval(cls))).all()
             if result is not None:
                 for i in result:
                     new_list.append(i)
@@ -87,3 +87,8 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
             self.__session.commit()
+
+    def close(self):
+        """ remove method on the private session_fact
+        """
+        self.__session.remove()
