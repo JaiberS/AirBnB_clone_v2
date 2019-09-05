@@ -56,7 +56,7 @@ def hello_state():
     for i in statequieto:
         j = i.to_dict()
         namedic.setdefault(j["name"], j["id"])
-    return render_template('7-states_list.html', states = namedic)
+    return render_template('7-states_list.html', states=namedic)
 
 
 @app.teardown_appcontext
